@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(to right, #2563eb var(--value-percent), #f1f5f9 var(--value-percent));
+  border-radius: 9999px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid #2563eb;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -3px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid #2563eb;
+  border-radius: 50%;
+  cursor: pointer;
+}
