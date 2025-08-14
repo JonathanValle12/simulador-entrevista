@@ -1,3 +1,13 @@
-export default function Entrevista() {
-    return <h1>Entrevista</h1>
+import InterviewClient from "./InterviewClient";
+
+export default async function Entrevista({
+    params,
+} : { params: Promise<{ sessionId: string}> }) {
+    const {sessionId} = await params;
+
+  return (
+    <>
+      <InterviewClient sessionId={sessionId} />
+    </>
+  )
 }
