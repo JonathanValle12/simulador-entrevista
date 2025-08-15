@@ -1,7 +1,7 @@
 export default function ProgressCard() {
     return (
         <article className="rounded-2xl border border-slate-200 bfg-white p-5 shadow-sm">
-            <h3 className="mb-4 text-base font-semibold text-slate-900">Progreso</h3>
+            <h3 className="mb-4 text-base font-semibold text-slate-900 mb-5">Progreso</h3>
 
             <dl className="mt-4 space-y-4 text-sm">
                 <div className="flex items-center justify-between">
