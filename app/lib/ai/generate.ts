@@ -6,43 +6,41 @@ import { questionSchema } from "./schema";
 import { buildQuestionPrompt } from "./prompt";
 
 export async function generateQuestion(
-    config: InterviewConfig,
-    history: QA[]
-): Promise<QA> {
-    const { nextType, difficulty, systemText, userParts} = buildQuestionPrompt(config, history);
+  config: InterviewConfig,
+  history: QA[]
+): Promise<{ preface?: string } & QA> {
+  if (!gemini) {
+    // Si quieres, aquí puedes lanzar error para no “inventar” nada cuando no haya IA:
+    throw new Error("IA no configurada (falta API key).");
+  }
 
-    if (!gemini) {
-        return {
-            question: `Redacta una pregunta ${nextType.toLowerCase()} nivel ${config.experiencia} para ${config.role}`,
-            type: nextType,
-            difficulty
-        }
-    }
+  const { nextType, difficulty, systemText, userParts } = buildQuestionPrompt(config, history);
 
-    const schema: Record<string, unknown> = questionSchema;
+  const resp = await gemini.models.generateContent({
+    model: "gemini-2.0-flash-001",
+    contents: [{ role: "user", parts: [{ text: systemText }, ...userParts] }],
+    config: {
+      temperature: 0.6,
+      responseMimeType: "application/json",
+      responseSchema: questionSchema as Record<string, unknown>,
+    },
+  });
 
-    const resp = await gemini.models.generateContent({
-        model: "gemini-2.0-flash-001",
-        contents: [{ role: "user", parts: [{ text: systemText}, ...userParts]}],
-        config: {
-            temperature: 0.6,
-            responseMimeType: "application/json",
-            responseSchema: schema,
-        },
-    });
+  const raw = resp.text ?? "{}";
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    throw new Error(`Respuesta IA inválida (JSON parse): ${e}`);
+  }
 
-    const raw = resp.text ?? "{}";
+  const obj = parsed as { preface?: unknown; question?: unknown; type?: unknown; difficulty?: unknown };
 
-    let parsed;
-    try {
-        parsed = JSON.parse(raw);
-    } catch(e) {
-        throw new Error(`Respuesta IA inválida (JSON parse): ${e}`);
-    }
-
-    return {
-        question: parsed.question,
-        type: parsed.type,
-        difficulty: parsed.difficulty
-    };
+  return {
+    preface: typeof obj.preface === "string" ? obj.preface : undefined,
+    question:
+      typeof obj.question === "string" ? obj.question : "Pregunta no válida: vuelve a intentar.",
+    type: (obj.type as QA["type"]) || nextType,
+    difficulty: typeof obj.difficulty === "number" ? obj.difficulty : difficulty,
+  };
 }

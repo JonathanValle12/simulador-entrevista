@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { getSession, answerCurrent } from "@/app/lib/sessions";
 
-export async function POST(req: Request, { params }: { params: { sessionId: string } }) {
+export async function POST(req: Request, ctx: { params: Promise<{ sessionId: string }> }) {
   try {
-    const s = getSession(params.sessionId);
+    const { sessionId } = await ctx.params;  
+    const s = getSession(sessionId);
     if (!s) return NextResponse.json({ error: "not-found" }, { status: 404 });
 
     const { answer } = (await req.json()) as { answer: string };

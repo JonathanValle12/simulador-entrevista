@@ -13,6 +13,7 @@ export type QA = {
     question: string;
     type: "Técnica" | "Comportamental" | "Diseño de Sistemas" | "Mixta";
     difficulty: number;
+    preface?: string;
     answer?: string;
 } 
 
