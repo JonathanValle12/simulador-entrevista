@@ -13,7 +13,7 @@ export default function ControlsCard() {
 
     return (
         <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="mb-4 text-base font-semibold text-slate-900 mb-5">Controles</h3>
+            <h3 className="mb-5 text-base font-semibold text-slate-900">Controles</h3>
 
             <div className="space-y-3">
                 <button type="button" onClick={handlePause}

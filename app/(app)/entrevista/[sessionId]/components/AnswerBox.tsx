@@ -23,7 +23,7 @@ export default function AnswerBox() {
                 <label className="sr-only">Escribe tu respuesta</label>
                 <textarea rows={7} value={value} onChange={(e) => setValue(e.target.value)}
                     placeholder="Escribe tu respuesta aquí... Puedes estructurar tu respuesta, dar ejemplos especificos y explicar tu razonamiento"
-                    className="w-full resize-y rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                    className="w-full min-h-[220px] resize-y rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600" />
 
                 <div className="mt-3 flex flex-wrap items-center gap-2">
                     <button type="button" title="Pausar"
