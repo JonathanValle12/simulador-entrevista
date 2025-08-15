@@ -12,7 +12,28 @@ export default function Config() {
     const [experiencia, setExperiencia] = useState<string | null>(null);
     const [tipo, setTipo] = useState<string | null>(null);
 
+    
     const router = useRouter();
+
+    const onStart = async () => {
+        const id = crypto.randomUUID();
+        const config = {
+            role, experiencia, tipo,
+            duracion,
+            dificultad: nivel
+        }
+
+        await fetch("/api/interview/sessions", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({ id, config })
+        });
+
+        router.push(`/entrevista/${id}`)
+    }
+
     return (
         <>
             <div className="mb-6 flex items-center justify-between">
@@ -244,7 +265,7 @@ export default function Config() {
 
                     <button
                         type="button"
-                        onClick={() => { const id = crypto.randomUUID() ?? String(Date.now()); router.push(`/entrevista/${id}`) }}
+                        onClick={onStart}
                         title="Iniciar entrevista"
                         disabled={!role || !tipo || !experiencia || !duracion}
                         className={`mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1
