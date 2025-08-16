@@ -20,7 +20,8 @@ export async function generateQuestion(
     model: "gemini-2.0-flash-001",
     contents: [{ role: "user", parts: [{ text: systemText }, ...userParts] }],
     config: {
-      temperature: 0.6,
+      temperature: 0.2,
+      maxOutputTokens: 256,
       responseMimeType: "application/json",
       responseSchema: questionSchema as Record<string, unknown>,
     },
@@ -41,6 +42,6 @@ export async function generateQuestion(
     question:
       typeof obj.question === "string" ? obj.question : "Pregunta no válida: vuelve a intentar.",
     type: (obj.type as QA["type"]) || nextType,
-    difficulty: typeof obj.difficulty === "number" ? obj.difficulty : difficulty,
+    difficulty,
   };
 }

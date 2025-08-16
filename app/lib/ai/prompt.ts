@@ -4,16 +4,9 @@ export function buildQuestionPrompt(config: InterviewConfig, history: QA[]) {
   const isFirst = history.length === 0;
 
   // Nivel y dificultad acotadas por experiencia
-  const ranges = {
-    Junior: [1, 3],
-    "Mid-Level": [2, 4],
-    Senior: [3, 5],
-  } as const;
-  const [minD, maxD] = ranges[config.experiencia];
-  const clamp = (n: number, a: number, b: number) => Math.max(a, Math.min(b, n));
-  const base = clamp(config.dificultad, minD, maxD);
-  const difficulty = isFirst ? clamp(base - 1, minD, maxD) : base;
-
+  const toInt = (v: unknown) => Math.max(1, Math.min(5, Number(v) || 3));
+  const difficulty = toInt(config.dificultad);
+  
   const level =
     config.experiencia === "Junior" ? "básico" :
     config.experiencia === "Mid-Level" ? "intermedio" : "senior";

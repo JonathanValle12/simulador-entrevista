@@ -15,6 +15,7 @@ export type QA = {
     difficulty: number;
     preface?: string;
     answer?: string;
+    skipped?: boolean;
 } 
 
 export interface Answer {
@@ -26,10 +27,12 @@ export interface Answer {
     topicsToReview?: string[];
 }
 
-export interface SessionState {
-    id: string;
-    config: InterviewConfig;
-    startedAt: number;
-    planned: number;
-    history: QA[];
+export type SessionState = {
+  id: string
+  config: InterviewConfig
+  startedAt: number
+  endsAt: number
+  planned: number
+  history: QA[]
+  pausedAt?: number
 }
