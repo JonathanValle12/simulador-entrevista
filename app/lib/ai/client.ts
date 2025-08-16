@@ -1,7 +1,7 @@
 import "server-only";
 import { GoogleGenAI } from "@google/genai";
 
-const KEY = "REDACTED";
+const KEY = process.env.GEMINI_API_KEY;
 
 export const gemini = KEY ? new GoogleGenAI({ apiKey: KEY}) : null;
 
