@@ -37,6 +37,8 @@ function avgMinPerQuestion(cfg: InterviewConfig) {
 
 function clamp(n: number, a: number, b: number) { return Math.max(a, Math.min(b, n)); }
 
+const lastChangeAt: Map<string, number> = new Map();
+
 export function createSession(id: string, config: InterviewConfig): SessionState {
   const existing = store.get(id);
   if (existing) return existing;
@@ -54,6 +56,7 @@ export function createSession(id: string, config: InterviewConfig): SessionState
 
   const state: SessionState = { id, config, startedAt, endsAt, planned, history: [] };
   store.set(id, state);
+  lastChangeAt.set(id, Date.now());
   return state;
 }
 
@@ -62,7 +65,13 @@ export function pushQuestion(id: string, qa: QA) { const s = store.get(id); if (
 export function answerCurrent(id: string, answer: string) {
   const s = store.get(id); if (!s) return;
   const last = s.history.at(-1);
-  if (last && !last.answer) last.answer = answer;
+  if (!last || last.answer) return;
+
+  const started = lastChangeAt.get(id) ?? Date.now();
+  const spent = Math.max(0, Date.now() - started);
+  last.answer = answer;
+  last.timeMs = spent;
+  lastChangeAt.set(id, Date.now());
 }
 export function resetStore() { store.clear(); }
 

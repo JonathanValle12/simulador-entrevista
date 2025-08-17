@@ -111,13 +111,7 @@ export default function InterviewClient({
   // publica al HUD
   useEffect(() => {
     if (!S) return;
-    setHUD({
-      total,
-      answered: answeredFromS,
-      elapsedSec,
-      remainingSec,
-      paused: !!S.pausedAt,
-    });
+    setHUD({ total, answered: answeredFromS, elapsedSec, remainingSec, paused: !!S.pausedAt, });
   }, [S, total, answeredFromS, elapsedSec, remainingSec, setHUD]);
 
   async function submitAnswer() {
@@ -172,8 +166,7 @@ export default function InterviewClient({
   }
 
   // chips fallback para la PRIMERA pintura si aún no hay question
-  const fallbackType =
-    S ? (S.config.tipo === "Mixta" ? "Comportamental" : S.config.tipo) : undefined;
+  const fallbackType = S ? (S.config.tipo === "Mixta" ? "Comportamental" : S.config.tipo) : undefined;
   const fallbackDifficulty =
     S ? (() => {
       const [minD, maxD] = ranges[S.config.experiencia];
@@ -212,21 +205,9 @@ export default function InterviewClient({
         <section className="space-y-4 lg:col-span-2">
           <article className="rounded-2xl bg-slate-900 p-4 text-slate-100 shadow-sm">
             <Stage />
-            <QuestionCard
-              key={currentComboKey}
-              q={question}
-              preface={preface ?? question?.preface ?? undefined}
-              sessionId={sessionId}
-              instant={instant}   // ✅ sólo para la combinación inicial
-            />
+            <QuestionCard key={currentComboKey} q={question} preface={preface ?? question?.preface ?? undefined} sessionId={sessionId} instant={instant} />
           </article>
-          <AnswerBox
-            value={answer}
-            onChange={setAnswer}
-            onSubmit={submitAnswer}
-            onSkip={handleSkip}
-            meta={metaForBox}
-          />
+          <AnswerBox value={answer} onChange={setAnswer} onSubmit={submitAnswer} onSkip={handleSkip} meta={metaForBox} />
         </section>
 
         <aside className="space-y-6">

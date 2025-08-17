@@ -16,6 +16,7 @@ export type QA = {
     preface?: string;
     answer?: string;
     skipped?: boolean;
+    timeMs?: number;
 } 
 
 export interface Answer {

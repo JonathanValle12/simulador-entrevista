@@ -1,5 +1,5 @@
 // app/(app)/entrevista/[sessionId]/layout.tsx
-import Header from "./(header_entrevista)/header";
+import Header from "./ui/Header";
 import { HUDProvider } from "./hud";
 import { getSession } from "@/app/lib/sessions";
 
