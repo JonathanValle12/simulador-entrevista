@@ -15,7 +15,6 @@ export default function ControlsCard({ sessionId }: { sessionId?: string }) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ action }),
         });
-        // ahora actualiza HUD; el efecto de arriba hará el re-sync de state
         setPaused(!paused);
     }
 

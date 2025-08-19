@@ -1,3 +1,5 @@
+import { InterviewResult } from "./result";
+
 export type Difficulty = 1|2|3|4|5;
 export type Tag = 'Técnica' | 'Comportamental' | 'Diseño' | 'Mixta';
 
@@ -29,11 +31,13 @@ export interface Answer {
 }
 
 export type SessionState = {
-  id: string
-  config: InterviewConfig
-  startedAt: number
-  endsAt: number
-  planned: number
-  history: QA[]
-  pausedAt?: number
+  id: string;
+  config: InterviewConfig;
+  startedAt: number;
+  endsAt: number;
+  planned: number;
+  history: QA[];
+  pausedAt?: number;
+
+  result?: InterviewResult;
 }

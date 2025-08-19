@@ -88,9 +88,7 @@ function Donut({
     <div className="relative" style={{ width: size, height: size }}>
       <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} aria-hidden>
         <g transform={`translate(${size / 2}, ${size / 2})`}>
-          {/* pista */}
           <circle r={r} cx={0} cy={0} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
-          {/* progreso */}
           <g transform="rotate(-90)">
             <circle
               r={r}
@@ -112,8 +110,6 @@ function Donut({
     </div>
   );
 }
-
-/* -------------------- util -------------------- */
 
 function clamp(n: number) {
   return Math.max(0, Math.min(100, Math.round(n)));

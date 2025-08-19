@@ -3,7 +3,6 @@ import type { InterviewConfig, QA } from "@/app/types/interview";
 export function buildQuestionPrompt(config: InterviewConfig, history: QA[]) {
   const isFirst = history.length === 0;
 
-  // Nivel y dificultad acotadas por experiencia
   const toInt = (v: unknown) => Math.max(1, Math.min(5, Number(v) || 3));
   const difficulty = toInt(config.dificultad);
   
@@ -18,11 +17,9 @@ export function buildQuestionPrompt(config: InterviewConfig, history: QA[]) {
       ? "Aplicación práctica y decisiones justificadas."
       : "Arquitectura, trade-offs y rendimiento.";
 
-  // Conteo por tipo
   const askedTech = history.filter(h => h.type === "Técnica").length;
   const askedBeh  = history.filter(h => h.type === "Comportamental").length;
 
-  // En Mixta, rota SOLO entre Técnica y Comportamental
   const rotateMixta = (): QA["type"] =>
     askedTech <= askedBeh ? "Técnica" : "Comportamental";
 
@@ -31,11 +28,9 @@ export function buildQuestionPrompt(config: InterviewConfig, history: QA[]) {
       ? rotateMixta()
       : (config.tipo as Exclude<InterviewConfig["tipo"], "Mixta">);
 
-  // En Mixta abrimos con presentación (Comportamental); en otros, respeta el tipo
   const firstType: QA["type"] =
     config.tipo === "Mixta" ? "Comportamental" : chosenType;
 
-  // Si la última respuesta es “ruido”, repite el MISMO tipo una vez
   const last = history.at(-1) || null;
   const lastQ = last?.question ?? "";
   const lastAnswer = (last?.answer ?? "").trim();
@@ -46,13 +41,11 @@ export function buildQuestionPrompt(config: InterviewConfig, history: QA[]) {
   const targetType: QA["type"] =
     isFirst ? firstType : repeatSame && last ? last.type : chosenType;
 
-  // Reglas por tipo (solo Técnica/Comportamental)
   const typeRules =
     targetType === "Técnica"
       ? "Pregunta concreta del stack/código. Puedes incluir snippet breve (≤15 líneas). Prohibido pedir historias personales."
       : "Pregunta de experiencias reales (enfoque STAR). Prohibido pedir código.";
 
-  // Prompt estricto y breve
   const systemText = isFirst
     ? `Eres entrevistador para "${config.role}". Nivel ${level}.
        Devuelve EXACTAMENTE:

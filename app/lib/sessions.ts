@@ -8,9 +8,9 @@ const store: Store = global._interviewStore ?? (global._interviewStore = new Map
 function avgMinPerQuestion(cfg: InterviewConfig) {
   const byType = {
     "Técnica": {
-      Junior: 2.2,        // ~13-14 preguntas en 30'
-      "Mid-Level": 2.0,   // ~15
-      Senior: 2.4,        // ~12-13 (respuestas más largas)
+      Junior: 2.2,
+      "Mid-Level": 2.0,
+      Senior: 2.4,
     },
     "Comportamental": {
       Junior: 2.7,
@@ -23,14 +23,13 @@ function avgMinPerQuestion(cfg: InterviewConfig) {
       Senior: 7.5,
     },
     "Mixta": {
-      Junior: 2.4,        // mezcla Téc + Comp
+      Junior: 2.4,
       "Mid-Level": 2.6,
       Senior: 2.8,
     },
   } as const;
 
   const base = byType[cfg.tipo][cfg.experiencia];
-  // pequeño ajuste por dificultad (±0.3 min aprox)
   const tweak = (cfg.dificultad - 3) * 0.15;
   return Math.max(1.6, base + tweak);
 }
@@ -49,9 +48,8 @@ export function createSession(id: string, config: InterviewConfig): SessionState
   const avg = avgMinPerQuestion(config);
   const rough = Math.round(config.duracion / avg);
 
-  // 🎯 límites dinámicos según duración (ya no fijo 12)
-  const minPlan = Math.max(6, Math.round(config.duracion / 5));    // ≥1 pregunta cada 5'
-  const maxPlan = Math.max(minPlan + 4, Math.round(config.duracion / 1.5)); // ≤1 cada 1.5'
+  const minPlan = Math.max(6, Math.round(config.duracion / 5));
+  const maxPlan = Math.max(minPlan + 4, Math.round(config.duracion / 1.5));
   const planned = clamp(rough, minPlan, maxPlan);
 
   const state: SessionState = { id, config, startedAt, endsAt, planned, history: [] };
@@ -87,4 +85,9 @@ export function resumeSession(id: string): number {
   s.endsAt += delta;
   s.pausedAt = undefined;
   return delta;
+}
+
+export function deleteSession(id: string) {
+  store.delete(id);
+  lastChangeAt.delete(id);
 }

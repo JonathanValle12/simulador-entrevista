@@ -23,7 +23,6 @@ export default function InterviewClient({
   const router = useRouter();
   const { setHUD, paused, total: hudTotal, answered: hudAnswered } = useHUD();
 
-  // semilla desde SSR
   const [state, setState] = useState<SessionState | null>(initialState ?? null);
   const [question, setQuestion] = useState<QA | null>(initialQuestion ?? null);
   const [preface, setPreface] = useState<string | null>(null);
@@ -32,7 +31,6 @@ export default function InterviewClient({
   const [loadingNext, setLoadingNext] = useState(false);
   const initRef = useRef(false);
 
-  // helpers
   const clamp = (n: number, a: number, b: number) => Math.max(a, Math.min(b, n));
   const ranges: Record<SessionState["config"]["experiencia"], [number, number]> = {
     Junior: [1, 3],
@@ -40,13 +38,11 @@ export default function InterviewClient({
     Senior: [3, 5],
   };
 
-  // tick local
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
 
-  // init: refrescar estado y, si no hay pendiente, pedir la primera
   useEffect(() => {
     if (initRef.current) return;
     initRef.current = true;
@@ -56,7 +52,6 @@ export default function InterviewClient({
         const s: SessionState = await fetch(`/api/interview/${sessionId}/state`, { cache: 'no-store' }).then(r => r.json());
         setState(s);
 
-        // si ya venías con pregunta pendiente por SSR, no pidas nada
         const last = s.history.at(-1);
         if (last && !last.answer) {
           setQuestion(last);
@@ -80,7 +75,6 @@ export default function InterviewClient({
     })();
   }, [sessionId, router]);
 
-  // refresca al pausar/reanudar
   useEffect(() => {
     (async () => {
       const s: SessionState = await fetch(`/api/interview/${sessionId}/state`, { cache: 'no-store' }).then(r => r.json());
@@ -88,10 +82,8 @@ export default function InterviewClient({
     })();
   }, [paused, sessionId]);
 
-  // usa el mejor estado disponible (CSR o SSR)
   const S = state ?? initialState ?? null;
 
-  // progreso
   const totalFromS = S?.planned ?? 0;
   const answeredFromS = S?.history?.filter(h => !!h.answer).length ?? 0;
   const completedFromS = S?.history?.filter(h => h.skipped || h.answer !== undefined).length ?? 0;
@@ -101,14 +93,12 @@ export default function InterviewClient({
   const current = Math.min(completed + 1, total || 1);
   const percent = total ? Math.round((completed / total) * 100) : 0;
 
-  // tiempos con pausa
   const baseNow = S?.pausedAt ? S.pausedAt : now;
   const plannedMs = S ? S.config.duracion * 60_000 : 0;
   const totalPausedMs = S ? Math.max(0, S.endsAt - (S.startedAt + plannedMs)) : 0;
   const elapsedSec = S ? Math.max(0, Math.floor((baseNow - S.startedAt - totalPausedMs) / 1000)) : 0;
   const remainingSec = S ? Math.max(0, Math.floor((S.startedAt + plannedMs + totalPausedMs - baseNow) / 1000)) : 0;
 
-  // publica al HUD
   useEffect(() => {
     if (!S) return;
     setHUD({ total, answered: answeredFromS, elapsedSec, remainingSec, paused: !!S.pausedAt, });
@@ -165,7 +155,6 @@ export default function InterviewClient({
     }
   }
 
-  // chips fallback para la PRIMERA pintura si aún no hay question
   const fallbackType = S ? (S.config.tipo === "Mixta" ? "Comportamental" : S.config.tipo) : undefined;
   const fallbackDifficulty =
     S ? (() => {
@@ -180,7 +169,6 @@ export default function InterviewClient({
 
   const barPercent = Math.max(0, Math.min(100, percent));
 
-  // 👉 cambio clave: `instant` sólo si la combinación actual == combinación inicial (SSR)
   const currentComboKey = `${preface ?? question?.preface ?? ""}|${question?.question ?? ""}`;
   const initialComboKey = `${initialQuestion?.preface ?? ""}|${initialQuestion?.question ?? ""}`;
   const instant = !!initialComboKey && currentComboKey === initialComboKey;

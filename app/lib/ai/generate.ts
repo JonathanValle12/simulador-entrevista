@@ -10,7 +10,6 @@ export async function generateQuestion(
   history: QA[]
 ): Promise<{ preface?: string } & QA> {
   if (!gemini) {
-    // Si quieres, aquí puedes lanzar error para no “inventar” nada cuando no haya IA:
     throw new Error("IA no configurada (falta API key).");
   }
 

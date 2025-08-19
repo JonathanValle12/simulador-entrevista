@@ -195,7 +195,6 @@ export default function Config() {
                             <p className="mt-1 text-sm text-slate-500">Tiempo estimado de la entrevista</p>
                         </header>
 
-                        {/* Valor centrado como en tu captura */}
                         <div className="mt-3 flex justify-center">
                             <div className="inline-flex items-baseline gap-1">
                                 <span className="text-2xl font-semibold text-blue-600 leading-none tabular-nums">

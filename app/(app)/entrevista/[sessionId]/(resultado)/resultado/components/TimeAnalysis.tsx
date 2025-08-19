@@ -17,13 +17,11 @@ export default function TimeAnalysis({ data }: { data: InterviewResult }) {
 
   return (
     <div>
-      {/* Tiempo total centrado */}
       <div className="flex flex-col items-center">
         <p className="text-4xl font-bold leading-none text-slate-900">{mmss(total)}</p>
         <p className="mt-1 text-sm text-slate-600">Tiempo total utilizado</p>
       </div>
 
-      {/* Filas compactas */}
       <div className="mt-4 divide-y divide-slate-100">
         <div className="flex items-center justify-between py-2">
           <span className="text-sm text-slate-700">Promedio por pregunta</span>

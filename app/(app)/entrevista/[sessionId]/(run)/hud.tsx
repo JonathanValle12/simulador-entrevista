@@ -9,7 +9,6 @@ type HUDState = {
   elapsedSec: number;
   remainingSec: number;
   paused: boolean;
-  // 👇 semillas para los chips del AnswerBox
   chipType?: ChipType;
   chipDifficulty?: number;
 };

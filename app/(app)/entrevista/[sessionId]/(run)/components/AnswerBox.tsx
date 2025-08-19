@@ -13,7 +13,6 @@ export default function AnswerBox({ value, onChange, onSubmit, onSkip, meta }: P
   const { paused, remainingSec, chipType, chipDifficulty } = useHUD();
   const disabled = paused || remainingSec <= 0;
 
-  // 👇 Fallback estable desde el HUD (sembrado en server)
   const type = (meta?.type as typeof chipType) ?? chipType;
   const difficulty = meta?.difficulty ?? chipDifficulty;
 

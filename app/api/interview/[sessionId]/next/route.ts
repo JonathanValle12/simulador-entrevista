@@ -12,14 +12,13 @@ export async function POST(req: Request, ctx: { params: Promise<{ sessionId: str
   const userAnswer = body?.answer?.trim();
   const skip = !!body?.skip;
 
-  // si hay una pregunta pendiente y no llegó respuesta, no avances
   const last = s.history.at(-1);
   if (!skip && !userAnswer && last && !last.answer) {
     const payload: Partial<QA> = {
       question: last.question,
       type: last.type,
       difficulty: last.difficulty,
-      preface: last.preface, // 👈 ahora también
+      preface: last.preface,
     };
     return NextResponse.json(payload);
   }
@@ -45,7 +44,6 @@ export async function POST(req: Request, ctx: { params: Promise<{ sessionId: str
 
   try {
     const ai = await generateQuestion(s.config, s.history);
-    // 👇 guarda el preface en el history
     pushQuestion(s.id, {
       question: ai.question,
       type: ai.type,

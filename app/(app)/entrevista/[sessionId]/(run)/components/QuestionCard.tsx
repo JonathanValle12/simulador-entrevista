@@ -14,7 +14,6 @@ function hash(str: string): string {
 
 type Stage = "idle" | "preface" | "question" | "done";
 
-/** Skeleton ligero para fondo oscuro */
 function Shimmer() {
     return (
         <div className="mt-2 animate-pulse" aria-busy="true" aria-live="polite">
@@ -39,43 +38,22 @@ export default function QuestionCard({
 }) {
     const fullPreface = (preface ?? q?.preface ?? "").trim();
     const fullQuestion = q?.question ?? "";
-
     const hasContent = (fullPreface.length + fullQuestion.length) > 0;
-
-    // Firma & key solo tienen sentido si hay contenido
     const sig = hasContent ? JSON.stringify({ p: fullPreface, q: fullQuestion }) : "";
     const key = hasContent ? `typed:${sessionId}:${hash(sig)}` : "";
-
-    // NO consideres sessionStorage si no hay contenido
-    const alreadyShown =
-        hasContent && typeof window !== "undefined" && !!window.sessionStorage.getItem(key);
-
-    // "Instant" solo aplica si hay contenido
+    const alreadyShown = hasContent && typeof window !== "undefined" && !!window.sessionStorage.getItem(key);
     const showInstant = hasContent && (!!instant || alreadyShown);
-
-    // Estado visible
-    const [prefDisp, setPrefDisp] = useState<string>(() =>
-        showInstant ? fullPreface : ""
-    );
-    const [qDisp, setQDisp] = useState<string>(() =>
-        showInstant ? fullQuestion : ""
-    );
+    const [prefDisp, setPrefDisp] = useState<string>(() => showInstant ? fullPreface : "" );
+    const [qDisp, setQDisp] = useState<string>(() => showInstant ? fullQuestion : "" );
     const [stage, setStage] = useState<Stage>(() => {
         if (!hasContent) return "idle";
         return showInstant ? "done" : "idle";
     });
-
-    // 👇 Skeleton desde el primer render cuando NO hay contenido,
-    // o cuando habrá tipeo (no instant).
-    const [showSkeleton, setShowSkeleton] = useState<boolean>(() =>
-        !hasContent ? true : !showInstant
-    );
-
+    const [showSkeleton, setShowSkeleton] = useState<boolean>(() => !hasContent ? true : !showInstant );
     const tRef = useRef<number | null>(null);
 
     useEffect(() => {
         
-        // helper local para evitar dependencia externa
         const typeText = (text: string, set: (s: string) => void, onEnd: () => void) => {
             let i = 0;
             set("");
@@ -92,7 +70,6 @@ export default function QuestionCard({
             tRef.current = id;
         };
 
-        // Sin contenido: skeleton y salir
         if (!hasContent) {
             setStage("idle");
             setPrefDisp("");
@@ -101,7 +78,6 @@ export default function QuestionCard({
             return;
         }
 
-        // Modo instantáneo: pinta todo y sin skeleton
         if (showInstant) {
             setStage("done");
             setPrefDisp(fullPreface);
@@ -113,7 +89,6 @@ export default function QuestionCard({
             return;
         }
 
-        // Tipeo normal
         if (tRef.current) {
             clearInterval(tRef.current);
             tRef.current = null;

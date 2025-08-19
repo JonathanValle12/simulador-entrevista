@@ -1,4 +1,3 @@
-import Header from "./ui/Header";
 
 export default function Layout({
     children,
@@ -7,7 +6,6 @@ export default function Layout({
 }>) {
     return (
         <>
-            <Header />
             {children}
         </>
     );

@@ -1,4 +1,3 @@
-// app/(app)/entrevista/[sessionId]/resultado/components/QuestionResultCard.tsx
 import { BadgeCheck, AlertCircle, Bot, Eye, Clock } from "lucide-react";
 import type { QAResult } from "@/app/types/result";
 import { mmss } from "../../../(run)/hud";
@@ -22,11 +21,9 @@ export default function QuestionResultCard({ item, indexLabel }: Props) {
 
   return (
     <article className="rounded-2xl bg-white p-6 md:p-7 ring-1 ring-slate-200">
-      {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-slate-900">{indexLabel}</h3>
-          {/* Pregunta de IA (suave) */}
           <p className="mt-1.5 text-[15px] leading-7 text-slate-600">
             {item.question}
           </p>
@@ -42,7 +39,6 @@ export default function QuestionResultCard({ item, indexLabel }: Props) {
         </div>
       </div>
 
-      {/* Tu respuesta */}
       <div className="mt-7">
         <div className="mb-2 flex items-center gap-2 text-[15px] font-semibold text-slate-700">
           <Eye className="h-4 w-4" />
@@ -50,7 +46,6 @@ export default function QuestionResultCard({ item, indexLabel }: Props) {
         </div>
 
         <div className="relative rounded-xl bg-slate-50 p-5 md:p-6 ring-1 ring-slate-200">
-          {/* pill dentro de la caja */}
           <div className="absolute right-3 top-3">
             <span
               className={`whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium ring-1 ${timeClasses}`}
@@ -71,7 +66,6 @@ export default function QuestionResultCard({ item, indexLabel }: Props) {
         </div>
       </div>
 
-      {/* Feedback de IA */}
       <div className="mt-7">
         <div className="mb-2 flex items-center gap-2 text-[15px] font-semibold text-slate-700">
           <Bot className="h-4 w-4 text-blue-600" />
@@ -84,7 +78,6 @@ export default function QuestionResultCard({ item, indexLabel }: Props) {
         </div>
       </div>
 
-      {/* Fortalezas / Áreas de Mejora */}
       <div className="mt-7 grid gap-8 lg:grid-cols-2">
         {item.strengths?.length > 0 && (
           <div>

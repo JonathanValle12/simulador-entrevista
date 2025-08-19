@@ -1,4 +1,3 @@
-// app/(app)/entrevista/[sessionId]/resultado/components/Recommendations.tsx
 'use client';
 
 import { Target, ArrowRight } from 'lucide-react';
@@ -12,7 +11,6 @@ export default function Recommendations({
 }) {
   return (
     <>
-      {/* Recomendaciones Personalizadas */}
       <article className="rounded-2xl bg-white p-5 ring-1 ring-slate-200">
         <h3 className="mb-1 flex items-center gap-2 font-semibold text-slate-800">
           <Target className="h-5 w-5 text-blue-600" aria-hidden />
@@ -38,7 +36,6 @@ export default function Recommendations({
         </ol>
       </article>
 
-      {/* Próximos Pasos */}
       <article className="rounded-2xl bg-white p-5 ring-1 ring-slate-200">
         <h3 className="mb-1 flex items-center gap-2 font-semibold text-slate-800">
           <ArrowRight className="h-5 w-5 text-emerald-600" aria-hidden />
