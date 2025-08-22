@@ -1,7 +1,10 @@
 import Header from "./common/Header";
 import { redirect } from "next/navigation";
 import { headers, cookies } from "next/headers";
-import type { SessionState } from "./types/interview";
+import type { SessionState } from "../types/interview";
+import Hero from "./sections/Hero";
+import Features from "./sections/Features";
+import HowItWorks from "./sections/HowItWorks";
 
 export default async function Home() {
   const c = await cookies();
@@ -23,5 +26,11 @@ export default async function Home() {
     }
   }
 
-  return <Header />;
+  return (
+    <>
+      <Hero />
+      <Features />
+      <HowItWorks />
+    </>
+  )
 }
