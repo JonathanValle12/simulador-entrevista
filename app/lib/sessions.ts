@@ -52,7 +52,7 @@ export function createSession(id: string, config: InterviewConfig): SessionState
   const maxPlan = Math.max(minPlan + 4, Math.round(config.duracion / 1.5));
   const planned = clamp(rough, minPlan, maxPlan);
 
-  const state: SessionState = { id, config, startedAt, endsAt, planned, history: [] };
+  const state: SessionState = { id, config, startedAt, endsAt, planned, history: [], finalized: false };
   store.set(id, state);
   lastChangeAt.set(id, Date.now());
   return state;

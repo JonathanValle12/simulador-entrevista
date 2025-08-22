@@ -5,7 +5,18 @@ import { getSession, pauseSession, resumeSession } from "@/app/lib/sessions";
 export async function GET(_req: Request, ctx: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = await ctx.params;
   const s = getSession(sessionId);
-  return s ? NextResponse.json(s) : NextResponse.json({ error: "not-found" }, { status: 404 });
+
+  if (!s) {
+
+    const res = NextResponse.json({ error: "not-found" }, { status: 404 });
+
+    res.cookies.set("interview_session", "", { path: "/", maxAge: 0});
+    return res;
+  }
+
+  const res = NextResponse.json(s);
+  res.cookies.set("interview_session", sessionId, { path: "/", sameSite: "lax"});
+  return res;
 }
 
 export async function POST(req: Request, ctx: { params: Promise<{ sessionId: string }> }) {
@@ -23,5 +34,11 @@ export async function POST(req: Request, ctx: { params: Promise<{ sessionId: str
     const added = resumeSession(sessionId);
     return NextResponse.json({ ok: true, added });
   }
+
+  if (action === "finish") {
+    s.endsAt = Date.now()
+    return NextResponse.json({ ok: true });
+  }
+  
   return NextResponse.json({ error: "bad-action" }, { status: 400 });
 }

@@ -6,6 +6,7 @@ type ChipType = "Técnica" | "Comportamental" | "Diseño de Sistemas" | "Mixta";
 type HUDState = {
   total: number;
   answered: number;
+  completed: number;
   elapsedSec: number;
   remainingSec: number;
   paused: boolean;
@@ -30,6 +31,7 @@ export function HUDProvider({
   const [hud, setHud] = useState<HUDState>({
     total: 0,
     answered: 0,
+    completed: 0,
     elapsedSec: 0,
     remainingSec: 0,
     paused: false,

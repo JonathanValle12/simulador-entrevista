@@ -5,7 +5,7 @@ import { useHUD } from "../hud";
 
 export default function ControlsCard({ sessionId }: { sessionId?: string }) {
     const router = useRouter();
-    const { paused, setPaused } = useHUD();
+    const { paused, setPaused, completed = 0, total = 0 } = useHUD();
 
     async function togglePause() {
         if (!sessionId) return;
@@ -17,6 +17,27 @@ export default function ControlsCard({ sessionId }: { sessionId?: string }) {
         });
         setPaused(!paused);
     }
+
+    const minRequired = Math.min(3, total);
+    const remaining = Math.max(0, minRequired - completed);
+    const canFinish = remaining === 0;
+
+    async function goToResults() {
+        if (!sessionId || !canFinish) return;
+        // 1) marca la sesión como finalizada
+        await fetch(`/api/interview/${sessionId}/state`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "finish" }),
+        }).catch(() => { });
+        // 2) navega a resultados
+        router.push(`/entrevista/${sessionId}/resultado`);
+    }
+
+    const hint = remaining
+        ? `Falta${remaining === 1 ? '' : 'n'} ${remaining} respuesta${remaining === 1 ? '' : 's'} para habilitar el botón.`
+        : '';
+
 
     return (
         <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -36,14 +57,16 @@ export default function ControlsCard({ sessionId }: { sessionId?: string }) {
 
                 <button
                     type="button"
-                    onClick={() => sessionId && router.push(`/entrevista/${sessionId}/resultado`)}
-                    className="w-full rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300"
+                    onClick={goToResults}
+                    disabled={!canFinish}
+                    className="w-full rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                    <span className="flex items-center justify-center gap-2">
-                        <Scissors className="h-4 w-4" />
-                        Terminar Entrevista
-                    </span>
+                    Terminar entrevista
                 </button>
+
+                {!canFinish && (
+                    <p className="mt-1 text-xs text-slate-500 text-center">{hint}</p>
+                )}
             </div>
         </article>
     );

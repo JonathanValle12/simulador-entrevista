@@ -99,10 +99,12 @@ export default function InterviewClient({
   const elapsedSec = S ? Math.max(0, Math.floor((baseNow - S.startedAt - totalPausedMs) / 1000)) : 0;
   const remainingSec = S ? Math.max(0, Math.floor((S.startedAt + plannedMs + totalPausedMs - baseNow) / 1000)) : 0;
 
+  
+
   useEffect(() => {
     if (!S) return;
-    setHUD({ total, answered: answeredFromS, elapsedSec, remainingSec, paused: !!S.pausedAt, });
-  }, [S, total, answeredFromS, elapsedSec, remainingSec, setHUD]);
+    setHUD({ total, answered: answeredFromS, completed: completedFromS, elapsedSec, remainingSec, paused: !!S.pausedAt, });
+  }, [S, total, answeredFromS, completedFromS, elapsedSec, remainingSec, setHUD]);
 
   async function submitAnswer() {
     if (!answer.trim()) return;
