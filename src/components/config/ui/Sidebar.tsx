@@ -41,8 +41,8 @@ export default function Sidebar({
                 <input 
                     type="range" min={15} max={90} step={5} value={duracion}
                     onChange={(e) => {
-                        const val = Number(e.currentTarget.value)
-                        setDuracion(Number(val))
+                        const val = Number(e.currentTarget.value) as Difficulty;
+                        setDuracion(val)
                         e.currentTarget.style.setProperty("--value-percent", `${pctDur(val)}%`)
                     }}
                     style={{ ["--value-percent" as string]: `${pctDur(duracion)}%`}}

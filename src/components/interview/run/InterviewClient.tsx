@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import AnswerBox from "./AnswerBox";
-import ControlsCard from "./ControlsCard";
-import ProgressCard from "./ProgressCard";
-import QuestionCard from "./QuestionCard";
-import Stage from "./Stage";
-import TipsCard from "./TipsCard";
-import type { QA, SessionState } from "@/types/interview";
-import { useHUD } from "./hud";
+import AnswerBox from "@/components/interview/run/ui/AnswerBox";
+import ControlsCard from "@/components/interview/run/ui/ControlsCard";
+import ProgressCard from "@/components/interview/run/ui/ProgressCard";
+import QuestionCard from "@/components/interview/run/question/QuestionCard";
+import Stage from "@/components/interview/run/ui/Stage";
+import TipsCard from "@/components/interview/run/ui/TipsCard";
+import type { QA, SessionState, Difficulty, QuestionType } from "@/types/interview";
+import { useHUD } from "@/components/interview/run/context/HudContext";
 
 export default function InterviewClient({
   sessionId,
@@ -99,7 +99,7 @@ export default function InterviewClient({
   const elapsedSec = S ? Math.max(0, Math.floor((baseNow - S.startedAt - totalPausedMs) / 1000)) : 0;
   const remainingSec = S ? Math.max(0, Math.floor((S.startedAt + plannedMs + totalPausedMs - baseNow) / 1000)) : 0;
 
-  
+
 
   useEffect(() => {
     if (!S) return;
@@ -157,14 +157,14 @@ export default function InterviewClient({
     }
   }
 
-  const fallbackType = S ? (S.config.tipo === "Mixta" ? "Comportamental" : S.config.tipo) : undefined;
-  const fallbackDifficulty =
+  const fallbackType: QuestionType | undefined = S ? (S.config.tipo === "Mixta" ? "Comportamental" : S.config.tipo) : undefined;
+  const fallbackDifficulty: Difficulty | undefined =
     S ? (() => {
       const [minD, maxD] = ranges[S.config.experiencia];
-      return clamp(S.config.dificultad, minD, maxD);
+      return clamp(S.config.dificultad, minD, maxD) as Difficulty;
     })() : undefined;
 
-  const metaForBox = {
+  const metaForBox: { type?: QuestionType; difficulty?: Difficulty } = {
     type: question?.type ?? fallbackType,
     difficulty: question?.difficulty ?? fallbackDifficulty,
   };

@@ -1,6 +1,6 @@
 import { BadgeCheck, AlertCircle, Bot, Eye, Clock } from "lucide-react";
 import { type QAResult } from "@/types/result";
-import { mmss } from "@/lib/time";
+import { mmss } from "@/lib/utils/time";
 
 type Props = { item: QAResult; indexLabel: string };
 

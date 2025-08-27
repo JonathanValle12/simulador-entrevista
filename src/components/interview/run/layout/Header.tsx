@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { Home, Brain, Clock } from "lucide-react";
-import { useHUD } from "./hud";
-import { mmss } from "@/lib/time";
+import { useHUD } from "../context/HudContext";
+import { mmss } from "@/lib/utils/time";
 
 export default function Header() {
   const { remainingSec } = useHUD();

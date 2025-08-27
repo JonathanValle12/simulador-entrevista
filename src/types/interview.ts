@@ -16,6 +16,7 @@ export interface InterviewConfig {
     tipo: ConfigType;
     duracion: number;
     dificultad: Difficulty;
+    stack?: string[];
 }
 
 export type QA = {

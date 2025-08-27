@@ -1,16 +1,16 @@
 'use client'
 
 import { InterviewResult } from "@/types/result";
-import SummaryHeader from "./SummaryHeader";
-import Tabs from "./Tabs";
+import SummaryHeader from "@/components/interview/result/summary/SummaryHeader";
+import Tabs from "@/components/interview/result/ui/Tabs";
 import { useEffect, useState } from "react";
-import QuestionResultCard from "./QuestionResultCard";
+import QuestionResultCard from "@/components/interview/result/ui/QuestionResultCard";
 import { Clock, Home, RotateCcw, TrendingUp } from "lucide-react";
-import Recommendations from "./Recommendations";
-import GeneralPerformance from "./GeneralPerformance";
-import TimeAnalysis from "./TimeAnalysis";
+import Recommendations from "@/components/interview/result/ui/Recommendations";
+import GeneralPerformance from "@/components/interview/result/charts/GeneralPerformance";
+import TimeAnalysis from "@/components/interview/result/charts/TimeAnalysis";
 import { useRouter } from "next/navigation";
-import PDFExport from "./PDFExport";
+import PDFExport from "@/components/interview/result/export/PDFExport";
 import { type TabKey } from "@/types/ui";
 
 export default function ResultClient({ sessionId, initialData = null }: { sessionId: string, initialData?: InterviewResult | null }) {

@@ -1,4 +1,4 @@
-import { type Tag } from "@/types/interview";
+import { type ConfigType } from "@/types/interview";
 
 export const ROLES = [
     { key: "Frontend Developer", label: "Frontend Developer", description: "React, Vue, Angular, CSS", emoji: "🎨" },
@@ -9,7 +9,7 @@ export const ROLES = [
     { key: "Data Engineer", label: "Data Engineer", description: "Python, SQL, ETL, Big Data", emoji: "📊" },
 ] as const;
 
-export const TYPES: { key: Tag; label: string; description: string; disableWhenJunior?: boolean }[] = [
+export const TYPES: { key: ConfigType; label: string; description: string; disableWhenJunior?: boolean }[] = [
     { key: "Técnica", label: "Técnica", description: "Algoritmos, estructuras de datos, coding" },
     { key: "Comportamental", label: "Comportamental", description: "Experiencias, situaciones, soft skills" },
     { key: "Diseño de Sistemas", label: "Diseño de Sistemas", description: "Arquitectura, escalabilidad, trade-offs", disableWhenJunior: true },

@@ -1,7 +1,7 @@
 'use client';
 
 import { type InterviewResult } from '@/types/result';
-import { mmss } from '@/lib/time';
+import { mmss } from '@/lib/utils/time';
 
 export default function TimeAnalysis({ data }: { data: InterviewResult }) {
   const total = Math.max(0, data.time.totalSec);

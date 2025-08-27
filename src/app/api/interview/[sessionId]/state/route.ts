@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getSession, pauseSession, resumeSession } from "@/lib/sessions";
+import { getSession, pauseSession, resumeSession } from "@/lib/session/store";
+import { setSessionCookie, clearSessionCookie } from "@/lib/http/cookies";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = await params;
@@ -8,18 +9,17 @@ export async function GET(_req: Request, { params }: { params: Promise<{ session
   if (!s) {
 
     const res = NextResponse.json({ error: "not-found" }, { status: 404 });
-
-    res.cookies.set("interview_session", "", { path: "/", maxAge: 0 });
+    clearSessionCookie(res);
     return res;
   }
 
   const res = NextResponse.json(s);
-  res.cookies.set("interview_session", sessionId, { path: "/", sameSite: "lax" });
+  setSessionCookie(res, sessionId);
   return res;
 }
 
-export async function POST(req: Request, { params }: { params: { sessionId: string } }) {
-  const { sessionId } = params;
+export async function POST(req: Request, { params }: { params: Promise<{ sessionId: string }> }) {
+  const { sessionId } = await params;
   const s = getSession(sessionId);
   if (!s) return NextResponse.json({ error: "not-found" }, { status: 404 });
 
@@ -36,6 +36,7 @@ export async function POST(req: Request, { params }: { params: { sessionId: stri
 
   if (action === "finish") {
     s.endsAt = Date.now()
+    s.pausedAt = undefined;
     return NextResponse.json({ ok: true });
   }
 

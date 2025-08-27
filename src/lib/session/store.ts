@@ -1,9 +1,14 @@
 import "server-only";
 import type { SessionState, InterviewConfig, QA } from "@/types/interview";
 
+// Store Global
 type Store = Map<string, SessionState>;
 declare global { var _interviewStore: Store | undefined; }
 const store: Store = global._interviewStore ?? (global._interviewStore = new Map());
+
+const questionStartAt: Map<string, number> = new Map();
+
+function clamp(n: number, a: number, b: number) { return Math.max(a, Math.min(b, n)); }
 
 function avgMinPerQuestion(cfg: InterviewConfig) {
   const byType = {
@@ -18,10 +23,7 @@ function avgMinPerQuestion(cfg: InterviewConfig) {
   return Math.max(1.6, base + tweak);
 }
 
-function clamp(n: number, a: number, b: number) { return Math.max(a, Math.min(b, n)); }
-
-const lastChangeAt: Map<string, number> = new Map();
-
+// API del Store
 export function createSession(id: string, config: InterviewConfig): SessionState {
   const existing = store.get(id);
   if (existing) return existing;
@@ -38,39 +40,65 @@ export function createSession(id: string, config: InterviewConfig): SessionState
 
   const state: SessionState = { id, config, startedAt, endsAt, planned, history: [] };
   store.set(id, state);
-  lastChangeAt.set(id, Date.now());
   return state;
 }
 
 export function getSession(id: string) { return store.get(id); }
-export function pushQuestion(id: string, qa: QA) { const s = store.get(id); if (s) s.history.push(qa); }
+export function pushQuestion(id: string, qa: QA) { 
+  const s = store.get(id); 
+  if(!s) return;
+  s.history.push(qa); 
+  // La nueva pregunta Ya es la actual: empieza a contar su tiempo
+  questionStartAt.set(id, Date.now());
+}
 export function answerCurrent(id: string, answer: string) {
   const s = store.get(id); if (!s) return;
   const last = s.history.at(-1);
   if (!last || last.answer) return;
 
-  const started = lastChangeAt.get(id) ?? Date.now();
-  const spent = Math.max(0, Date.now() - started);
+  const started = questionStartAt.get(id) ?? Date.now();
   last.answer = answer;
-  last.timeMs = spent;
-  lastChangeAt.set(id, Date.now());
+  last.timeMs = Math.max(0, Date.now() - started);
+
+  // ya no hay pregunta activa
+  questionStartAt.delete(id);
 }
 
 export function pauseSession(id: string) {
-  const s = store.get(id); if (!s) return;
-  if (!s.pausedAt) s.pausedAt = Date.now();
+  const s = store.get(id); if (!s || s.pausedAt) return;
+  s.pausedAt = Date.now();
 }
 
 export function resumeSession(id: string): number {
-  const s = store.get(id); if (!s) return 0;
-  if (!s.pausedAt) return 0;
+  const s = store.get(id);
+  if (!s || !s.pausedAt) return 0;
   const delta = Date.now() - s.pausedAt;
   s.endsAt += delta;
   s.pausedAt = undefined;
+
+  // Corre el inicio de la pregunta para excluir el tiempo en pausa
+  const qStart = questionStartAt.get(id);
+  if(qStart) questionStartAt.set(id, qStart + delta);
   return delta;
 }
 
 export function deleteSession(id: string) {
   store.delete(id);
-  lastChangeAt.delete(id);
+  questionStartAt.delete(id);
+}
+
+export function skipCurrent(id: string) {
+  const s = store.get(id); 
+  if(!s) return;
+
+  const last = s.history.at(-1);
+  if(!last || last.answer !== undefined) return;
+
+  const started = questionStartAt.get(id) ?? Date.now();
+  last.skipped = true;
+  last.answer = "";
+  last.timeMs = Math.max(0, Date.now() - started);
+
+  // ya no hay pregunta activa
+  questionStartAt.delete(id);
 }

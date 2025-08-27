@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createSession } from "@/lib/sessions";
+import { createSession } from "@/lib/session/store";
 import { type InterviewConfig } from "@/types/interview";
 
 export async function POST(req: Request) {

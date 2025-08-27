@@ -1,6 +1,6 @@
 import InterviewClient from "@/components/interview/run/InterviewClient";
-import { hasFinished } from "@/lib/session-logic";
-import { getSession } from "@/lib/sessions";
+import { hasFinished } from "@/lib/session/logic";
+import { getSession } from "@/lib/session/store";
 import type { QA, SessionState } from "@/types/interview";
 import { redirect } from "next/navigation";
 

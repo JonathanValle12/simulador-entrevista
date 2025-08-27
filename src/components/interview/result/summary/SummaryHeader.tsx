@@ -1,6 +1,6 @@
 'use client';
 
-import { mmss } from "@/lib/time";
+import { mmss } from "@/lib/utils/time";
 
 type Props = {
   score: number;

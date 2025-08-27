@@ -1,6 +1,6 @@
 import { type ConfigType } from "@/types/interview";
 import { BoltIcon } from "lucide-react";
-import { TYPES } from "@/data/options";
+import { TYPES } from "@/data/interviewOptions";
 import Card from "../../common/Card";
 
 export default function TypePicker({

@@ -1,5 +1,5 @@
-import { useHUD } from "./hud";
-import { mmss } from "@/lib/time";
+import { useHUD } from "../context/HudContext";
+import { mmss } from "@/lib/utils/time";
 
 export default function ProgressCard() {
 

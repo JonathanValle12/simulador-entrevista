@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/lib/sessions";
+import { getSession } from "@/lib/session/store";
 import { scoreSession } from "@/lib/scoring/score";
-import { hasFinished } from "@/lib/session-logic";
+import { hasFinished } from "@/lib/session/logic";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ sessionId: string }> }) {
     const { sessionId } = await params;

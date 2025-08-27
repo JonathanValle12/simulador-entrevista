@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
-import { getSession, pushQuestion, answerCurrent } from "@/lib/sessions";
+import { getSession, pushQuestion, answerCurrent, skipCurrent } from "@/lib/session/store";
 import { generateQuestion } from "@/lib/ai/generate";
 import type { QA } from "@/types/interview";
-import { hasFinished } from "@/lib/session-logic";
+import { hasFinished } from "@/lib/session/logic";
 
 export async function POST(req: Request, { params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = await params;
 
   const s = getSession(sessionId);
   if (!s) return NextResponse.json({ error: "not-found" }, { status: 404 });
+
+  if(s.pausedAt) return NextResponse.json({ error: "paused"}, { status: 423 });
 
   const body = await req.json().catch(() => ({} as { answer?: string; skip?: boolean }));
   const userAnswer = body?.answer?.trim();
@@ -28,8 +30,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ session
   if (userAnswer) {
     answerCurrent(s.id, userAnswer);
   } else if (skip && last && !last.answer) {
-    last.answer = "";
-    last.skipped = true;
+    skipCurrent(s.id);
   }
 
   const { done, endedBy } = hasFinished(s);

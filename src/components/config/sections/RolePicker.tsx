@@ -1,6 +1,6 @@
 import { Code2 } from "lucide-react";
 import Card from "@/components/common/Card";
-import { ROLES } from "@/data/options";
+import { ROLES } from "@/data/interviewOptions";
 export default function RolePicker({
     role,
     onSelect,

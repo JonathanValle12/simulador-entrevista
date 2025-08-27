@@ -1,4 +1,4 @@
-import Header from "@/components/config/header";
+import Header from "@/components/config/layout/Header";
 
 export default function Layout({ children }: Readonly<{ children: React.ReactNode}>) {
 

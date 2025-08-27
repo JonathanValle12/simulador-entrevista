@@ -1,6 +1,6 @@
 import { Pause, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useHUD } from "./hud";
+import { useHUD } from "../context/HudContext";
 
 export default function ControlsCard({ sessionId }: { sessionId?: string }) {
     const router = useRouter();

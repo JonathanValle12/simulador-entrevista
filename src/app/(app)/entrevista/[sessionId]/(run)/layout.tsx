@@ -1,7 +1,7 @@
-import Header from "@/components/interview/run/Header";
-import { HUDProvider } from "@/components/interview/run/hud";
-import { hudFromSession } from "@/lib/session-logic";
-import { getSession } from "@/lib/sessions";
+import Header from "@/components/interview/run/layout/Header";
+import { HUDProvider } from "@/components/interview/run/context/HudContext";
+import { hudFromSession } from "@/lib/session/logic";
+import { getSession } from "@/lib/session/store";
 
 type LayoutProps = {
   children: React.ReactNode;

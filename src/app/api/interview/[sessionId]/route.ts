@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { deleteSession } from '@/lib/sessions';
+import { deleteSession } from '@/lib/session/store';
+import { clearSessionCookie } from '@/lib/http/cookies';
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = await params;
@@ -7,7 +8,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ sess
   deleteSession(sessionId);
 
   const res = NextResponse.json({ ok: true });
-  res.cookies.set("interview_session", "", { path: "/", maxAge: 0 });
+  clearSessionCookie(res);
 
   return res;
 }

@@ -1,5 +1,5 @@
-import Footer from "@/components/site/Footer";
-import Header from "@/components/site/Header";
+import Footer from "@/components/site/layout/Footer";
+import Header from "@/components/site/layout/Header";
 
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
 

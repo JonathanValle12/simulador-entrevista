@@ -6,7 +6,7 @@ import type { ConfigType, ExperienceLevel, Difficulty } from "@/types/interview"
 import RolePicker from "@/components/config/sections/RolePicker";
 import ExperiencieLevel from "@/components/config/sections/ExperiencieLevel";
 import TypePicker from "@/components/config/sections/TypePicker";
-import Sidebar from "@/components/config/sidebar";
+import Sidebar from "@/components/config/ui/Sidebar";
 
 export default function Config() {
     const [duracion, setDuracion] = useState(30);

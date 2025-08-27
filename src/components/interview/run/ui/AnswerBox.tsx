@@ -1,5 +1,5 @@
 import { ArrowRight, Eraser, SkipForward } from "lucide-react";
-import { useHUD } from "./hud";
+import { useHUD } from "../context/HudContext";
 import type { QuestionType, Difficulty } from "@/types/interview";
 
 type Props = {

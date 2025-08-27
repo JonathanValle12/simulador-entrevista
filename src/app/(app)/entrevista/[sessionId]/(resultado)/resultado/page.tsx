@@ -1,9 +1,9 @@
-import { getSession } from "@/lib/sessions";
+import { getSession } from "@/lib/session/store";
 import ResultClient from "@/components/interview/result/ResultClient";
-import Header from "@/components/interview/result/Header";
+import Header from "@/components/interview/result/layout/Header";
 import { redirect } from "next/navigation";
 import { type SessionState } from "@/types/interview";
-import { hasFinished } from "@/lib/session-logic";
+import { hasFinished } from "@/lib/session/logic";
 
 export default async function Resultado({
   params,
