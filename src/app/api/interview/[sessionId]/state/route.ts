@@ -31,7 +31,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ session
   }
   if (action === "resume") {
     const added = resumeSession(sessionId);
-    return NextResponse.json({ ok: true, added });
+    return NextResponse.json({ ok: true, added, endsAt: s.endsAt });
   }
 
   if (action === "finish") {

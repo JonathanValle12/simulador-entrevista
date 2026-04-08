@@ -1,16 +1,29 @@
 "use client";
 
 import type { InterviewResult } from "@/types/result";
-import { type QuestionType } from "@/types/interview";
+import type { QuestionType, ConfigType } from "@/types/interview"; // <-- añade ConfigType
 
 export default function GeneralPerformance({ data }: { data: InterviewResult }) {
+  const mode: ConfigType = data.mode;
+
   const groups: Array<{ key: QuestionType; label: string }> = [
     { key: "Técnica", label: "Conocimiento Técnico" },
     { key: "Comportamental", label: "Habilidades Comportamentales" },
     { key: "Diseño de Sistemas", label: "Diseño de Sistemas" },
   ];
 
+  // qué tipos mostrar según el modo elegido:
+  const allow: Record<ConfigType, QuestionType[]> = {
+    "Técnica": ["Técnica"],
+    "Comportamental": ["Comportamental"],
+    "Diseño de Sistemas": ["Diseño de Sistemas"],
+    "Mixta": ["Técnica", "Comportamental", "Diseño de Sistemas"],
+  };
+
+  const whitelist = allow[mode];
+
   const items = groups
+    .filter(g => whitelist.includes(g.key))
     .map(g => {
       const qs = data.questions.filter(q => q.type === g.key);
       if (!qs.length) return null;
@@ -20,19 +33,15 @@ export default function GeneralPerformance({ data }: { data: InterviewResult }) 
     .filter(Boolean) as Array<{ label: string; value: number; samples: number }>;
 
   if (!items.length) {
-    items.push({
-      label: "Rendimiento General",
-      value: clamp(data.overallScore),
-      samples: data.totalAnswered,
-    });
+    items.push({ label: "Rendimiento General", value: clamp(data.overallScore), samples: data.totalAnswered });
   }
 
   return (
     <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
-    {items.map(({ label, value, samples }) => (
-      <MetricCard key={label} label={label} value={value} samples={samples} />
-    ))}
-  </div>
+      {items.map(({ label, value, samples }) => (
+        <MetricCard key={label} label={label} value={value} samples={samples} />
+      ))}
+    </div>
   );
 }
 

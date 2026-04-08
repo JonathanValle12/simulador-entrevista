@@ -5,13 +5,15 @@ import SummaryHeader from "@/components/interview/result/summary/SummaryHeader";
 import Tabs from "@/components/interview/result/ui/Tabs";
 import { useEffect, useState } from "react";
 import QuestionResultCard from "@/components/interview/result/ui/QuestionResultCard";
-import { Clock, Home, RotateCcw, TrendingUp } from "lucide-react";
+import { Clock, Home, RotateCcw, SkipForward, TrendingUp } from "lucide-react";
 import Recommendations from "@/components/interview/result/ui/Recommendations";
 import GeneralPerformance from "@/components/interview/result/charts/GeneralPerformance";
 import TimeAnalysis from "@/components/interview/result/charts/TimeAnalysis";
 import { useRouter } from "next/navigation";
 import PDFExport from "@/components/interview/result/export/PDFExport";
 import { type TabKey } from "@/types/ui";
+import { ConfigType, SessionState } from "@/types/interview";
+import { mmss } from "@/lib/utils/time";
 
 export default function ResultClient({ sessionId, initialData = null }: { sessionId: string, initialData?: InterviewResult | null }) {
     const router = useRouter();
@@ -19,6 +21,8 @@ export default function ResultClient({ sessionId, initialData = null }: { sessio
     const [tab, setTab] = useState<TabKey>('detalles');
     const [data, setData] = useState<InterviewResult | null>(initialData);
     const [showSkeleton, setShowSkeleton] = useState(false);
+
+    const [session, setSession] = useState<SessionState | null>(null);
 
     useEffect(() => {
         const t = setTimeout(() => setShowSkeleton(true), 200);
@@ -54,6 +58,16 @@ export default function ResultClient({ sessionId, initialData = null }: { sessio
         return () => { alive = false; ctrl.abort(); };
     }, [sessionId, data, router]);
 
+    useEffect(() => {
+        let alive = true;
+        fetch(`/api/interview/${sessionId}/state`, { cache: "no-store" })
+            .then(r => r.json())
+            .then((s: SessionState) => { if (alive) setSession(s); })
+            .catch(() => { });
+        return () => { alive = false; };
+
+    }, [sessionId]);
+
     function clearSession(id: string) {
         return fetch(`/api/interview/${id}`, { method: 'DELETE', keepalive: true }).catch(() => { });
     }
@@ -71,10 +85,24 @@ export default function ResultClient({ sessionId, initialData = null }: { sessio
         );
     }
 
+    const answeredSeq = data.questions;
+
+    const stackUsed = data.stack ?? [];
+    const skipped = data.skipped ?? [];
+
     return (
         <>
             <div className="mx-auto w-full max-w-7xl px-2 lg:px-6 py-3.5">
                 <SummaryHeader score={data.overallScore} answered={data.totalAnswered} planned={data.totalPlanned} totalSec={data.time.totalSec} />
+
+                {stackUsed.length > 0 && (
+                    <div className="mt-3">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">
+                            <span className="font-medium">Stack usado:</span>
+                            <span>{stackUsed.join(", ")}</span>
+                        </span>
+                    </div>
+                )}
 
                 <div className="mt-6">
                     <Tabs value={tab} onChange={setTab} />
@@ -82,9 +110,35 @@ export default function ResultClient({ sessionId, initialData = null }: { sessio
 
                 {tab === 'detalles' && (
                     <section className="mt-6 space-y-6">
-                        {data.questions.map((q) => (
-                            <QuestionResultCard key={q.index} item={q} indexLabel={`Pregunta ${q.index + 1}`} />
+                        {/* Respondidas (puntuadas) con numeración SECUENCIAL para UI */}
+                        {answeredSeq.map((q, idx) => (
+                            <QuestionResultCard key={`${q.index}-${idx}`} item={q} indexLabel={`Pregunta ${idx + 1}`} />
                         ))}
+
+                        {/* NEW: bloque de preguntas saltadas */}
+                        {skipped.length > 0 && (
+                            <article className="rounded-2xl bg-white p-5 ring-1 ring-slate-200">
+                                <h3 className="mb-3 text-slate-800 font-semibold flex items-center gap-2">
+                                    <SkipForward className="h-5 w-5 text-slate-600" />
+                                    Preguntas saltadas (no puntúan)
+                                </h3>
+
+                                <ul className="space-y-3">
+                                    {skipped.map((s) => (
+                                        <li key={s.index} className="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="text-[15px] leading-7 text-slate-700">{s.question}</div>
+                                                <span className="rounded-full bg-white ring-1 ring-slate-300 px-2.5 py-0.5 text-xs text-slate-700">Saltada</span>
+                                            </div>
+                                            <div className="mt-2 flex items-center gap-2 text-xs text-slate-600">
+                                                <Clock className="h-3.5 w-3.5" />
+                                                <span>Duración: {mmss(s.timeSec)}</span>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </article>
+                        )}
                     </section>
                 )}
 

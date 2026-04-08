@@ -15,12 +15,14 @@ export default function Config() {
     const [experiencia, setExperiencia] = useState<ExperienceLevel | null>(null);
     const [tipo, setTipo] = useState<ConfigType | null>(null);
 
+    const [stack, setStack] = useState<string[]>([]);
+
     const router = useRouter();
     const isJunior = experiencia === "Junior";
 
     const onStart = async () => {
         const id = crypto.randomUUID();
-        const config = { role, experiencia, tipo, duracion, dificultad: nivel };
+        const config = { role, experiencia, tipo, duracion, dificultad: nivel, stack };
 
         await fetch("/api/interview/sessions", {
             method: "POST",
@@ -37,6 +39,8 @@ export default function Config() {
         if (isJunior && tipo === "Diseño de Sistemas") setTipo(null);
     }, [isJunior, tipo]);
 
+    useEffect(() => { setStack([]);}, [role]);
+
     return (
         <>
             <div className="mb-6 flex items-center justify-between">
@@ -49,7 +53,7 @@ export default function Config() {
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <section className="space-y-6 lg:col-span-2">
-                    <RolePicker role={role} onSelect={setRole} />
+                    <RolePicker role={role} stack={stack} onSelect={setRole} onChangeStack={setStack} />
                     <ExperiencieLevel value={experiencia} onChange={setExperiencia} />
                     <TypePicker value={tipo} onSelect={setTipo} isJunior={isJunior} />
                 </section>
@@ -57,6 +61,7 @@ export default function Config() {
                     duracion={duracion} setDuracion={setDuracion}
                     nivel={nivel} setNivel={setNivel}
                     role={role} experiencia={experiencia ?? null} tipo={tipo}
+                    stack={stack}
                     onStart={onStart} />
             </div>
         </>

@@ -22,13 +22,12 @@ export function hasFinished(s: SessionState, now = Date.now()) {
 }
 
 export function hudFromSession(s: SessionState, now = Date.now()) {
-    const answered = answeredCount(s);
-    const plannedMs = s.config.duracion * 60_000;
-    const totalPausedMs = Math.max(0, s.endsAt - (s.startedAt + plannedMs));
-    const baseNow = s.pausedAt ?? now;
+  const baseNow = now;
+  const totalSec = s.config.duracion * 60;
 
-    const elapsedSec = Math.max(0, Math.floor((baseNow - s.startedAt - totalPausedMs) / 1000));
-    const remainingSec = Math.max(0, Math.floor((s.startedAt + plannedMs + totalPausedMs - baseNow) / 1000));
+  const remainingSec = Math.max(0, Math.floor((s.endsAt - baseNow) / 1000));
+  const elapsedSec   = Math.max(0, totalSec - remainingSec);
 
-    return { total: s.planned, answered, elapsedSec, remainingSec, paused: !!s.pausedAt };
+  const answered = answeredCount(s);
+  return { total: s.planned, answered, elapsedSec, remainingSec, paused: !!s.pausedAt };
 }

@@ -5,37 +5,50 @@ import { mmss } from "@/lib/utils/time";
 type Props = { item: QAResult; indexLabel: string };
 
 export default function QuestionResultCard({ item, indexLabel }: Props) {
+  const isIntro = item.index === 0;
+
+  const typeLabel = isIntro ? "Introducción" : item.type;
+  const typeBadgeTitle = isIntro ? "Esta pregunta es introductoria y no puntúa" : "";
+
+
   const timeClasses =
     item.timeComment === "Adecuado"
       ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
       : item.timeComment === "Muy corto"
-      ? "bg-amber-50 text-amber-700 ring-amber-200"
-      : "bg-rose-50 text-rose-700 ring-rose-200";
+        ? "bg-amber-50 text-amber-700 ring-amber-200"
+        : "bg-rose-50 text-rose-700 ring-rose-200";
 
   const timeLabel =
     item.timeComment === "Adecuado"
       ? "Tiempo adecuado"
       : item.timeComment === "Muy corto"
-      ? "Tiempo corto"
-      : "Tiempo largo";
+        ? "Tiempo corto"
+        : "Tiempo largo";
 
   return (
     <article className="rounded-2xl bg-white p-6 md:p-7 ring-1 ring-slate-200">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-slate-900">{indexLabel}</h3>
-          <p className="mt-1.5 text-[15px] leading-7 text-slate-600">
-            {item.question}
-          </p>
+          <p className="mt-1.5 text-[15px] leading-7 text-slate-600">{item.question}</p>
+          {isIntro && (
+            <p className="mt-1 text-xs text-slate-500">Esta es una pregunta introductoria (no puntua)</p>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-xs font-semibold text-white">
-            {Math.round(item.score)}%
-          </span>
-          <span className="rounded-full border border-slate-300 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700">
+          {!isIntro && (
+            <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-xs font-semibold text-white">
+              {Math.round(item.score)}%
+            </span>
+          )}
+          {!isIntro ? (
+            <span className="rounded-full border border-slate-300 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700">
             {item.type}
           </span>
+          ) : (
+            <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600" title={typeBadgeTitle}>{typeLabel}</span>
+          )}
         </div>
       </div>
 

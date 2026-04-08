@@ -19,6 +19,6 @@ export default async function Entrevista({
   const initialQuestion: QA | null = last && !last.answer ? last : null;
 
   return (
-    <InterviewClient sessionId={sessionId} initialState={s ?? null} initialQuestion={initialQuestion} />
+    <InterviewClient sessionId={sessionId} initialState={s} initialQuestion={initialQuestion} />
   );
 }

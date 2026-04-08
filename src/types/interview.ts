@@ -1,7 +1,5 @@
 import type { InterviewResult } from "./result";
 
-export type Difficulty = 1|2|3|4|5;
-
 export const EXPERIENCE_LEVELS = ["Junior","Mid-Level","Senior"] as const;
 export const CONFIG_TYPES      = ["Técnica","Comportamental","Diseño de Sistemas","Mixta"] as const;
 export const QUESTION_TYPES    = ["Técnica","Comportamental","Diseño de Sistemas"] as const;
@@ -15,14 +13,12 @@ export interface InterviewConfig {
     experiencia: ExperienceLevel;
     tipo: ConfigType;
     duracion: number;
-    dificultad: Difficulty;
     stack?: string[];
 }
 
 export type QA = {
     question: string;
     type: QuestionType;
-    difficulty: Difficulty;
     preface?: string;
     answer?: string;
     skipped?: boolean;

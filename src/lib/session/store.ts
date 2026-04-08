@@ -19,8 +19,8 @@ function avgMinPerQuestion(cfg: InterviewConfig) {
   } as const;
 
   const base = byType[cfg.tipo][cfg.experiencia];
-  const tweak = (cfg.dificultad - 3) * 0.15;
-  return Math.max(1.6, base + tweak);
+
+  return Math.max(1.6, base);
 }
 
 // API del Store
@@ -101,4 +101,24 @@ export function skipCurrent(id: string) {
 
   // ya no hay pregunta activa
   questionStartAt.delete(id);
+}
+
+export function updateLastQuestion(id: string, newData: Partial<QA>) {
+  const s = store.get(id);
+  const last = s?.history.at(-1);
+  if (!s || !last) return;
+
+  if (newData.type)       last.type       = newData.type;
+
+  // Actualiza el texto de la pregunta
+  last.question = newData.question ?? last.question;
+  last.preface = newData.preface ?? last.preface;
+  
+  // Limpia la respuesta para que se vuelva a hacer
+  last.answer = undefined;
+  last.skipped = undefined;
+  last.timeMs = undefined;
+  
+  // Reinicia el contador de tiempo para esta pregunta
+  questionStartAt.set(id, Date.now());
 }

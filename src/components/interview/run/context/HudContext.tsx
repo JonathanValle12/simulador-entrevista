@@ -1,6 +1,6 @@
 'use client';
 import { createContext, useContext, useState, useCallback } from 'react';
-import type { QuestionType, Difficulty } from '@/types/interview';
+import type { QuestionType } from '@/types/interview';
 
 type HUDState = {
   total: number;
@@ -10,7 +10,6 @@ type HUDState = {
   remainingSec: number;
   paused: boolean;
   chipType?: QuestionType;
-  chipDifficulty?: Difficulty;
 };
 
 type HUDCtx = HUDState & {

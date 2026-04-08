@@ -1,4 +1,4 @@
-import { type QA, type Difficulty } from "./interview";
+import { type QA, QuestionType, ConfigType } from "./interview";
 
 export type TimeComment = "Muy corto" | "Adecuado" | "Muy largo";
 export type EfficiencyLabel = "Excelente" | "Buena" | "Mejorable";
@@ -7,7 +7,6 @@ export type QAResult = {
     index: number;
     question: string;
     type: QA["type"],
-    difficulty: Difficulty;
     answer: string;
     timeSec: number;
     score: number;
@@ -15,6 +14,13 @@ export type QAResult = {
     strengths: string[],
     improvements: string[];
     timeComment: TimeComment;
+}
+
+export type SkippedItem = {
+    index: number;
+    question: string;
+    timeSec: number;
+    type: QuestionType;
 }
 
 export type InterviewResult = {
@@ -30,4 +36,8 @@ export type InterviewResult = {
     recommendations: string[],
     nextSteps: string[],
     questions: QAResult[];
+
+    mode: ConfigType;
+    stack: string[];
+    skipped: SkippedItem[];
 }
